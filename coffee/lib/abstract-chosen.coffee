@@ -54,7 +54,7 @@ class AbstractChosen
       setTimeout (=> this.container_mousedown()), 50 unless @active_field
     else
       @activate_field() unless @active_field
-  
+
   input_blur: (evt) ->
     if not @mouse_on_container
       @active_field = false
@@ -118,10 +118,18 @@ class AbstractChosen
     new_id = this.generate_random_id()
     @form_field.id = new_id
     new_id
-  
+
   generate_random_char: ->
     chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     rand = Math.floor(Math.random() * chars.length)
     newchar = chars.substring rand, rand+1
+
+  # class methods and variables ============================================================
+
+  @browser_is_supported: ->
+    if window.navigator.appName == "Microsoft Internet Explorer"
+      return null isnt document.documentMode >= 8
+    return true
+
 
 root.AbstractChosen = AbstractChosen
