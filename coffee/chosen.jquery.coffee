@@ -37,7 +37,7 @@ class Chosen extends AbstractChosen
 
     @f_width = @form_field_jq.outerWidth()
 
-    container_props = 
+    container_props =
       id: @container_id
       class: container_classes.join ' '
       style: 'width: ' + (@f_width) + 'px;' #use parens around @f_width so coffeescript doesn't think + ' px' is a function parameter
@@ -96,6 +96,8 @@ class Chosen extends AbstractChosen
     @search_field.keyup (evt) => this.keyup_checker(evt)
     @search_field.keydown (evt) => this.keydown_checker(evt)
     @search_field.focus (evt) => this.input_focus(evt)
+
+    $(document).bind "contextmenu", (evt) => !this.active_field;
 
     if @is_multiple
       @search_choices.click (evt) => this.choices_click(evt)
@@ -369,9 +371,15 @@ class Chosen extends AbstractChosen
 
       @search_field.val ""
 
-      @form_field_jq.trigger "change", {'selected': @form_field.options[item.options_index].value} if @is_multiple || @form_field_jq.val() != @current_value
+      @form_field_jq.trigger "change", {
+          'selected': @form_field.options[item.options_index].value
+          'isRightClick': @event_right_click evt
+        } if @is_multiple || @form_field_jq.val() != @current_value
       @current_value = @form_field_jq.val()
       this.search_field_scale()
+
+  event_right_click: (evt) ->
+    evt.which == 3;
 
   result_activate: (el) ->
     el.addClass("active-result")
