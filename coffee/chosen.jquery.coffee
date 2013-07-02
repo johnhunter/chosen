@@ -344,6 +344,17 @@ class Chosen extends AbstractChosen
       high = @result_highlight
       high_id = high.attr "id"
 
+      # allow right-click to short-circuit and not update form state
+      if @event_right_click evt
+        position = high_id.substr(high_id.lastIndexOf("_") + 1 )
+        item = @results_data[position]
+        @form_field_jq.trigger "change", {
+          'selected': @form_field.options[item.options_index].value
+          'isRightClick': true
+        }
+        this.results_hide();
+        return this.search_field_scale()
+
       this.result_clear_highlight()
 
       if @is_multiple
@@ -373,13 +384,12 @@ class Chosen extends AbstractChosen
 
       @form_field_jq.trigger "change", {
           'selected': @form_field.options[item.options_index].value
-          'isRightClick': @event_right_click evt
         } if @is_multiple || @form_field_jq.val() != @current_value
       @current_value = @form_field_jq.val()
       this.search_field_scale()
 
   event_right_click: (evt) ->
-    evt.which == 3;
+    evt.which == 3 || evt.which == 2 || evt.ctrlKey
 
   result_activate: (el) ->
     el.addClass("active-result")
