@@ -348,8 +348,10 @@ class Chosen extends AbstractChosen
       if @event_right_click evt
         position = high_id.substr(high_id.lastIndexOf("_") + 1 )
         item = @results_data[position]
+        origOption = @form_field.options[item.options_index]
         @form_field_jq.trigger "change", {
-          'selected': @form_field.options[item.options_index].value
+          'selected': origOption.value
+          'origOption': origOption
           'isRightClick': true
         }
         this.results_hide();
@@ -368,9 +370,10 @@ class Chosen extends AbstractChosen
 
       position = high_id.substr(high_id.lastIndexOf("_") + 1 )
       item = @results_data[position]
+      origOption = @form_field.options[item.options_index]
       item.selected = true
 
-      @form_field.options[item.options_index].selected = true
+      origOption.selected = true
 
       if @is_multiple
         this.choice_build item
@@ -383,7 +386,8 @@ class Chosen extends AbstractChosen
       @search_field.val ""
 
       @form_field_jq.trigger "change", {
-          'selected': @form_field.options[item.options_index].value
+          'selected': origOption.value
+          'origOption': origOption
         } if @is_multiple || @form_field_jq.val() != @current_value
       @current_value = @form_field_jq.val()
       this.search_field_scale()
