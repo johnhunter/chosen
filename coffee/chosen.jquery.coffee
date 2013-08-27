@@ -170,7 +170,7 @@ class Chosen extends AbstractChosen
 
   results_build: ->
     @parsing = true
-    @results_data = root.SelectParser.select_to_array @form_field
+    @results_data = root.SelectParser.select_to_array @form_field, @options
 
     if @is_multiple and @choices > 0
       @search_choices.find("li.search-choice").remove()
@@ -454,6 +454,8 @@ class Chosen extends AbstractChosen
                 if regex.test part
                   found = true
                   results += 1
+
+          found = false if searchText.length and option.search_excluded
 
           if found
             if searchText.length

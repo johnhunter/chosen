@@ -1,8 +1,10 @@
 class SelectParser
-  
-  constructor: ->
+
+  constructor: (options) ->
+    @options = options
     @options_index = 0
     @parsed = []
+    @search_exclude_class = options.search_exclude_class or ''
 
   add_node: (child) ->
     if child.nodeName.toUpperCase() is "OPTGROUP"
@@ -36,6 +38,7 @@ class SelectParser
           group_array_index: group_position
           classes: option.className
           style: option.style.cssText
+          search_excluded: String(option.className).indexOf(@search_exclude_class) > -1 if @search_exclude_class
       else
         @parsed.push
           array_index: @parsed.length
@@ -43,8 +46,8 @@ class SelectParser
           empty: true
       @options_index += 1
 
-SelectParser.select_to_array = (select) ->
-  parser = new SelectParser()
+SelectParser.select_to_array = (select, options) ->
+  parser = new SelectParser(options)
   parser.add_node( child ) for child in select.childNodes
   parser.parsed
 
