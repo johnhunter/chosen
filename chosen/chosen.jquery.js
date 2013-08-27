@@ -12,9 +12,11 @@
   var SelectParser;
 
   SelectParser = (function() {
-    function SelectParser() {
+    function SelectParser(options) {
+      this.options = options;
       this.options_index = 0;
       this.parsed = [];
+      this.search_exclude_class = options.search_exclude_class || '';
     }
 
     SelectParser.prototype.add_node = function(child) {
@@ -60,7 +62,8 @@
             disabled: group_disabled === true ? group_disabled : option.disabled,
             group_array_index: group_position,
             classes: option.className,
-            style: option.style.cssText
+            style: option.style.cssText,
+            search_excluded: this.search_exclude_class ? String(option.className).indexOf(this.search_exclude_class) > -1 : void 0
           });
         } else {
           this.parsed.push({
@@ -77,9 +80,9 @@
 
   })();
 
-  SelectParser.select_to_array = function(select) {
+  SelectParser.select_to_array = function(select, options) {
     var child, parser, _i, _len, _ref;
-    parser = new SelectParser();
+    parser = new SelectParser(options);
     _ref = select.childNodes;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       child = _ref[_i];
@@ -136,7 +139,8 @@ Copyright (c) 2011 by Harvest
       this.choices = 0;
       this.single_backstroke_delete = this.options.single_backstroke_delete || false;
       this.max_selected_options = this.options.max_selected_options || Infinity;
-      return this.inherit_select_classes = this.options.inherit_select_classes || false;
+      this.inherit_select_classes = this.options.inherit_select_classes || false;
+      return this.search_exclude_class = this.options.search_exclude_class || false;
     };
 
     AbstractChosen.prototype.set_default_text = function() {
@@ -540,7 +544,7 @@ Copyright (c) 2011 by Harvest
     Chosen.prototype.results_build = function() {
       var content, data, _i, _len, _ref1;
       this.parsing = true;
-      this.results_data = root.SelectParser.select_to_array(this.form_field);
+      this.results_data = root.SelectParser.select_to_array(this.form_field, this.options);
       if (this.is_multiple && this.choices > 0) {
         this.search_choices.find("li.search-choice").remove();
         this.choices = 0;
@@ -891,6 +895,9 @@ Copyright (c) 2011 by Harvest
                   }
                 }
               }
+            }
+            if (searchText.length && option.search_excluded) {
+              found = false;
             }
             if (found) {
               if (searchText.length) {
