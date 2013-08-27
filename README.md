@@ -11,6 +11,7 @@ Forked to allow some customisations.
 
 - version 0.9.13 broke our layout (e.g. explicit width/top on `.chzn-results` was removed) so we are using a branch of v0.9.12
 - we need some additional changes
+- we have not kept the Prototype port in sync!
 
 **Please use the `workspace-picker` branch.**
 
